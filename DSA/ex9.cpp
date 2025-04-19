@@ -123,7 +123,7 @@ public:
 int main() {
     AVLTree dictionary;
 
-    dictionary.insertKeyword("Enineer", "HeadAche");
+    dictionary.insertKeyword("Engineer", "HeadAche");
     dictionary.insertKeyword("Doctor", "Ham nhi bacha paye");
     dictionary.insertKeyword("Neta", "corruption");
 

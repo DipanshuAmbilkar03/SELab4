@@ -8,7 +8,6 @@ struct Student {
     int rollNumber;
     string name, division, address;
     
-    // Function to read student data from a string (file)
     static Student fromString(const string &line) {
         Student s;
         stringstream ss(line);
@@ -21,7 +20,6 @@ struct Student {
         return s;
     }
 
-    // Function to write student data as a string to the file
     string toString() const {
         return to_string(rollNumber) + ", " + name + ", " + division + ", " + address;
     }
@@ -80,9 +78,9 @@ void displayStudent(const string &filename) {
         Student s = Student::fromString(line);
         if (s.rollNumber == rollNumber) {
             cout << "Roll Number: " << s.rollNumber << "\n"
-                 << "Name: " << s.name << "\n"
-                 << "Division: " << s.division << "\n"
-                 << "Address: " << s.address << "\n";
+                << "Name: " << s.name << "\n"
+                << "Division: " << s.division << "\n"
+                << "Address: " << s.address << "\n";
             found = true;
             break;
         }
@@ -105,35 +103,3 @@ int main() {
     }
     return 0;
 }
-
-// output
-
-// 1. Add Student
-// 2. Delete Student
-// 3. Display Student
-// 4. Exit
-// Enter your choice: 1
-// Enter Roll Number, Name, Division, Address: 101
-// John Doe
-// A
-// 123 Main St
-// Student added.
-
-// 1. Add Student
-// 2. Delete Student
-// 3. Display Student
-// 4. Exit
-// Enter your choice: 3
-// Enter Roll Number to display: 101
-// Roll Number: 101
-// Name: John Doe
-// Division: A
-// Address: 123 Main St
-
-// 1. Add Student
-// 2. Delete Student
-// 3. Display Student
-// 4. Exit
-// Enter your choice: 2
-// Enter Roll Number to delete: 101
-// Student deleted.

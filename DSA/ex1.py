@@ -34,6 +34,22 @@ class HashTable:
         self.table[index] = number
         self.count += 1
 
+    def search(self, number):
+        index = self._hash(number)
+        original_index = index
+        i = 1
+        while self.table[index] is not None:
+            if self.table[index] == number:
+                return index
+            if self.probing_type == 'linear':
+                index = (index + 1) % self.size
+            elif self.probing_type == 'quadratic':
+                index = (original_index + i**2) % self.size
+                i += 1
+            if i >= self.size:
+                break
+        return -1  # Not found
+
     def display(self):
         for i, item in enumerate(self.table):
             if item is not None:
@@ -49,3 +65,15 @@ if __name__ == "__main__":
         number = int(input("Enter number: "))
         ht.insert(number)
     ht.display()
+
+    # Search functionality
+    while True:
+        search_input = input("Enter number to search (or 'exit' to quit): ")
+        if search_input.lower() == 'exit':
+            break
+        number = int(search_input)
+        index = ht.search(number)
+        if index != -1:
+            print(f"Number {number} found at index {index}.")
+        else:
+            print(f"Number {number} not found in the table.")

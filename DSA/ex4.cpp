@@ -90,19 +90,31 @@ public:
     
     void levelTraversal() { levelTraversal(root); }
 };
-
 int main() {
     Btree bt;
     int entries, searchValue;
+
+    cout << "Enter total number of entries in the binary tree: ";
     cin >> entries;
+
+    cout << "Enter " << entries << " values to insert into the tree:";
     bt.inputData(entries);
+
+    cout << "Inorder Traversal of the Tree:";
     bt.inorderTraversal();
+
+    cout << "Level Order Traversal of the Tree:";
     bt.levelTraversal();
-    cout << "Minimum Value: " << bt.findMin() << endl;
+
+    cout << "Minimum Value in the Tree: " << bt.findMin() << endl;
+
     bt.swapChildren();
-    cout << "Tree after swapping children: ";
+    cout << "Tree after swapping left and right children:";
     bt.levelTraversal();
+
+    cout << "Enter value to search in the tree: ";
     cin >> searchValue;
-    cout << (bt.search(searchValue) ? "Found" : "Not Found") << endl;
+    cout << (bt.search(searchValue) ? "\nValue Found in the tree." : "\nValue Not Found in the tree.") << endl;
+
     return 0;
 }

@@ -1,85 +1,82 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <algorithm>
 using namespace std;
 
-typedef pair<int, int> pii;
+const int MAX = 100;
 
-class Graph {
-    int V;
-    vector<list<pii>> adj;
-
+class Edge {
 public:
-    Graph(int V) {
-        this->V = V;
-        adj.resize(V);
-    }
-
-    void addEdge(int u, int v, int cost) {
-        adj[u].push_back(make_pair(cost, v));
-        adj[v].push_back(make_pair(cost, u));
-    }
-
-    void primMST() {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        vector<int> key(V, INT_MAX);
-        vector<int> parent(V, -1);
-        vector<bool> inMST(V, false);
-
-        pq.push(make_pair(0, 0));
-        key[0] = 0;
-
-        while (!pq.empty()) {
-            int u = pq.top().second;
-            pq.pop();
-
-            if (inMST[u]) continue;
-            inMST[u] = true;
-
-            for (list<pii>::iterator it = adj[u].begin(); it != adj[u].end(); ++it) {
-                int cost = it->first;
-                int v = it->second;
-
-                if (!inMST[v] && cost < key[v]) {
-                    key[v] = cost;
-                    pq.push(make_pair(cost, v));
-                    parent[v] = u;
-                }
-            }
-        }
-
-        for (int i = 1; i < V; i++) {
-            if (parent[i] == -1) {
-                cout << "Disconnected graph. MST not available.\n";
-                return;
-            }
-        }
-
-        cout << "\nMST Result:\n";
-        cout << "From\tTo\tCost\n";
-        for (int i = 1; i < V; i++) {
-            cout << parent[i] << "\t" << i << "\t" << key[i] << "\n";
-        }
-    }
+    int src, dest, weight;
 };
 
+int parent[MAX];
+
+int find(int x) {
+    if (parent[x] == x) return x;
+    return parent[x] = find(parent[x]);
+}
+
+void unite(int a, int b) {
+    parent[find(a)] = find(b);
+}
+
 int main() {
-    int V, edges;
-    cout << "Offices: ";
+    Edge edges[MAX];
+    int V, E;
+    cout << "Enter number of offices (nodes): ";
     cin >> V;
+    cout << "Enter number of connections (edges): ";
+    cin >> E;
 
-    Graph g(V);
-
-    cout << "Connections: ";
-    cin >> edges;
-
-    cout << "Enter each connection as: from to cost\n";
-
-    for (int i = 0; i < edges; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
-        g.addEdge(a, b, c);
+    cout << "Enter source, destination, and cost of each connection:\n";
+    for (int i = 0; i < E; i++) {
+        cin >> edges[i].src >> edges[i].dest >> edges[i].weight;
     }
 
-    g.primMST();
+    for (int i = 0; i < E - 1; i++) {
+        for (int j = 0; j < E - i - 1; j++) {
+            if (edges[j].weight > edges[j + 1].weight) {
+                Edge temp = edges[j];
+                edges[j] = edges[j + 1];
+                edges[j + 1] = temp;
+            }
+        }
+    }
 
+    for (int i = 0; i < V; i++) parent[i] = i;
+
+    int totalCost = 0;
+    cout << "\nMinimum Spanning Tree:\n";
+    for (int i = 0; i < E; i++) {
+        int u = edges[i].src;
+        int v = edges[i].dest;
+        int w = edges[i].weight;
+
+        if (find(u) != find(v)) {
+            unite(u, v);
+            cout << u << " - " << v << " : " << w << "\n";
+            totalCost += w;
+        }
+    }
+
+    cout << "Total Minimum Cost: " << totalCost << endl;
     return 0;
 }
+
+
+// Enter number of offices (nodes): 4
+// Enter number of connections (edges): 5
+// Enter source, destination, and cost:
+// 0 1 10
+// 0 2 6
+// 0 3 5
+// 1 3 15
+// 2 3 4
+
+// OutPut
+// Minimum Spanning Tree:
+// 2 - 3 : 4
+// 0 - 3 : 5
+// 0 - 1 : 10
+// Total Minimum Cost: 19
+

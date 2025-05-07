@@ -1,83 +1,82 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <stack>
+#include <cctype>
 using namespace std;
 
-class node {
+class Node {
 public:
-	char value;
-	node* left;
-	node* right;
-	node* next = NULL;
+    char value;
+    Node* left;
+    Node* right;
 
-	node(char c) {
-		this->value = c;
-		left = NULL;
-		right = NULL;
-	}
-	node() {
-		left = NULL;
-		right = NULL;
-	}
-	friend class Stack;
-	friend class expression_tree;
+    Node(char v) {
+        value = v;
+        left = right = nullptr;
+    }
 };
 
-class Stack {
-	node* head = NULL;
-
+class ExpressionTree {
 public:
-	void push(node* x) {
-		if (head == NULL) {
-			head = x;
-		}
-		else {
-			x->next = head;
-			head = x;
-		}
-	}
+    Node* constructTree(const string& prefix) {
+        stack<Node*> s;
+        for (int i = prefix.length() - 1; i >= 0; i--) {
+            char ch = prefix[i];
 
-	node* pop() {
-		node* p = head;
-		head = head->next;
-		return p;
-	}
-	friend class expression_tree;
-};
+            Node* newNode = new Node(ch);
+            if (isOperator(ch)) {
+                Node* left = s.top(); s.pop();
+                Node* right = s.top(); s.pop();
+                newNode->left = left;
+                newNode->right = right;
+            }
+            s.push(newNode);
+        }
+        return s.top();
+    }
 
-class expression_tree {
-public:
-	void inorder(node* x) {
-		if (x == NULL)
-			return;
-		inorder(x->left);
-		cout << x->value << " ";
-		inorder(x->right);
-	}
+    void postorderNonRecursive(Node* root) {
+        if (!root) return;
+
+        stack<Node*> s1, s2;
+        s1.push(root);
+
+        while (!s1.empty()) {
+            Node* node = s1.top(); s1.pop();
+            s2.push(node);
+
+            if (node->left) s1.push(node->left);
+            if (node->right) s1.push(node->right);
+        }
+
+        cout << "Postorder Traversal: ";
+        while (!s2.empty()) {
+            cout << s2.top()->value << " ";
+            s2.pop();
+        }
+        cout << endl;
+    }
+
+    void deleteTree(Node* root) {
+        if (!root) return;
+        deleteTree(root->left);
+        deleteTree(root->right);
+        delete root;
+    }
+
+private:
+    bool isOperator(char ch) {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^';
+    }
 };
 
 int main() {
-	string s = "ABC*+D/";
-	Stack e;
-	expression_tree a;
-	node *x, *y, *z;
-	int l = s.length();
+    string prefix = "+--a*bc/def"; 
+    ExpressionTree tree;
 
-	for (int i = 0; i < l; i++) {
-		if (s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' || s[i] == '^') {
-			z = new node(s[i]);
-			x = e.pop();
-			y = e.pop();
-			z->left = y;
-			z->right = x;
-			e.push(z);
-		}
-		else {
-			z = new node(s[i]);
-			e.push(z);
-		}
-	}
+    Node* root = tree.constructTree(prefix);
+    tree.postorderNonRecursive(root);
+    tree.deleteTree(root);
 
-	cout << "The Inorder Traversal of Expression Tree: ";
-	a.inorder(z);
-	cout << endl;
-	return 0;
+    cout << "Tree deleted successfully.\n";
+    return 0;
 }
